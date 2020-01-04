@@ -3,13 +3,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return '{  
-    "employee": {  
-        "name":       "Asutosh",   
-        "salary":      -500,   
-        "married":    "to-be"  
-    }  
-}'
+    return 'nice job maan'
 
 if __name__ == '__main__':
     app.run()
