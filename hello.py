@@ -59,6 +59,7 @@ def is_match(known_embedding, candidate_embedding, thresh=0.5):
 	else:
 		print('>face is NOT a Match (%.3f > %.3f)' % (score, thresh))
 
+		
 import urllib.request
 
 def store_image(url, local_file_name):
@@ -67,11 +68,11 @@ def store_image(url, local_file_name):
       f.write(resource.read())
     
 def check_images():
-    store_image('https://m.media-amazon.com/images/M/MV5BMTkxMzk4MjQ4MF5BMl5BanBnXkFtZTcwMzExODQxOA@@._V1_.jpg','iacocca_1.jpg')
-    store_image('https://www.biography.com/.image/t_share/MTE5NDg0MDU0OTM2NTg1NzQz/tom-cruise-9262645-1-402.jpg','iacocca_2.jpg')
-    filenames = ['iacocca_1.jpg', 'iacocca_2.jpg']    
+    store_image('https://m.media-amazon.com/images/M/MV5BMTkxMzk4MjQ4MF5BMl5BanBnXkFtZTcwMzExODQxOA@@._V1_.jpg', 'iacocca_1.jpg')
+    store_image('https://www.biography.com/.image/t_share/MTE5NDg0MDU0OTM2NTg1NzQz/tom-cruise-9262645-1-402.jpg', 'iacocca_2.jpg')
+    filenames = ['iacocca_1.jpg', 'iacocca_2.jpg']
     embeddings = get_embeddings(filenames)
-    return is_match(embeddings[0], embeddings[1]) 
+    return is_match(embeddings[0], embeddings[1])
     
     
     
