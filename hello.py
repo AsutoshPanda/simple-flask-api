@@ -1,78 +1,50 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 app = Flask(__name__)
 
+@app.route('/getmsg/', methods=['GET'])
+def respond():
+    # Retrieve the name from url parameter
+    name = request.args.get("name", None)
+
+    # For debugging
+    print(f"got name {name}")
+
+    response = {}
+
+    # Check if user sent a name at all
+    if not name:
+        response["ERROR"] = "no name found, please send a name."
+    # Check if the user entered a number not a name
+    elif str(name).isdigit():
+        response["ERROR"] = "name can't be numeric."
+    # Now the user entered a valid name
+    else:
+        response["MESSAGE"] = f"Welcome {name} to our awesome platform!!"
+
+    # Return the response in json format
+    return jsonify(response)
+
+@app.route('/post/', methods=['POST'])
+def post_something():
+    param = request.form.get('name')
+    print(param)
+    # You can add the test cases you made in the previous function, but in our case here you are just testing the POST functionality
+    if param:
+        return jsonify({
+            "Message": f"Welcome {name} to our awesome platform!!",
+            # Add this option to distinct the POST request
+            "METHOD" : "POST"
+        })
+    else:
+        return jsonify({
+            "ERROR": "no name found, please send a name."
+        })
+
+# A welcome message to test our server
 @app.route('/')
-def hello_world():
-    return 'something is here !!'
+def index():
+    return "<h1>Welcome to our server !!</h1>"
 
 if __name__ == '__main__':
-    app.run()
-
-
-from matplotlib import pyplot
-from PIL import Image
-from numpy import asarray
-from scipy.spatial.distance import cosine
-from mtcnn import MTCNN
-from keras_vggface.vggface import VGGFace
-from keras_vggface.utils import preprocess_input
- 
-# extract a single face from a given photograph
-def extract_face(filename, required_size=(224, 224)):
-	# load image from file
-	pixels = pyplot.imread(filename)
-	# create the detector, using default weights
-	detector = MTCNN()
-	# detect faces in the image
-	results = detector.detect_faces(pixels)
-	# extract the bounding box from the first face
-	x1, y1, width, height = results[0]['box']
-	x2, y2 = x1 + width, y1 + height
-	# extract the face
-	face = pixels[y1:y2, x1:x2]
-	# resize pixels to the model size
-	image = Image.fromarray(face)
-	image = image.resize(required_size)
-	face_array = asarray(image)
-	return face_array
- 
-# extract faces and calculate face embeddings for a list of photo files
-def get_embeddings(filenames):
-	# extract faces
-	faces = [extract_face(f) for f in filenames]
-	# convert into an array of samples
-	samples = asarray(faces, 'float32')
-	# prepare the face for the model, e.g. center pixels
-	samples = preprocess_input(samples, version=2)
-	# create a vggface model
-	model = VGGFace(model='resnet50', include_top=False, input_shape=(224, 224, 3), pooling='avg')
-	# perform prediction
-	yhat = model.predict(samples)
-	return yhat
- 
-# determine if a candidate face is a match for a known face
-def is_match(known_embedding, candidate_embedding, thresh=0.5):
-	# calculate distance between embeddings
-	score = cosine(known_embedding, candidate_embedding)
-	if score <= thresh:
-		print('>face is a Match (%.3f <= %.3f)' % (score, thresh))
-	else:
-		print('>face is NOT a Match (%.3f > %.3f)' % (score, thresh))
-
-		
-import urllib.request
-
-def store_image(url, local_file_name):
-  with urllib.request.urlopen(url) as resource:
-    with open(local_file_name, 'wb') as f:
-      f.write(resource.read())
-    
-def check_images():
-    store_image('https://m.media-amazon.com/images/M/MV5BMTkxMzk4MjQ4MF5BMl5BanBnXkFtZTcwMzExODQxOA@@._V1_.jpg', 'iacocca_1.jpg')
-    store_image('https://www.biography.com/.image/t_share/MTE5NDg0MDU0OTM2NTg1NzQz/tom-cruise-9262645-1-402.jpg', 'iacocca_2.jpg')
-    filenames = ['iacocca_1.jpg', 'iacocca_2.jpg']
-    embeddings = get_embeddings(filenames)
-    return is_match(embeddings[0], embeddings[1])
-    
-    
-    
+    # Threaded option to enable multiple instances for multiple user access support
+    app.run(threaded=True, port=5000)
