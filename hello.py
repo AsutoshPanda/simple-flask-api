@@ -1,3 +1,8 @@
+# usage
+# http://flaskapp-asutosh.herokuapp.com
+# http://flaskapp-asutosh.herokuapp.com/getmsg/?name=asu
+# for post, see
+
 from flask import Flask, request, jsonify
 app = Flask(__name__)
 
